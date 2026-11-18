@@ -43,6 +43,10 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px
 .ring b{font-size:38px;color:var(--navy)}
 @media (prefers-color-scheme:dark){.ring b{color:var(--gold)}}
 .ring span{color:var(--mute);font-size:14px}
+.fam{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.fam button{background:var(--gold-soft);color:var(--ink);border:2px solid var(--gold);font-size:16px}
+.fam button:disabled{opacity:.5}
+.ok{color:#1f9d55;font-weight:700;margin:6px 0 0}
 .msg{font-size:19px;font-weight:700;margin:4px 0 14px}
 footer{max-width:620px;margin:0 auto 36px;padding:0 14px;text-align:center}
 footer h3{margin:0 0 10px;font-size:16px;color:var(--mute);font-weight:700}
@@ -77,6 +81,9 @@ footer h3{margin:0 0 10px;font-size:16px;color:var(--mute);font-weight:700}
   <section id="end" class="card score hide">
     <div class="ring" id="ring"><b id="sc"></b><span id="of"></span></div>
     <div class="msg" id="ms"></div>
+    <p class="note" id="pick">اضغط على أسرتك لإرسال درجتك</p>
+    <div class="fam" id="fam"><button data-f="أسرة لباس الصليب">أسرة لباس الصليب</button><button data-f="أسرة شهيدات">أسرة شهيدات</button></div>
+    <p class="ok hide" id="sent">تم إرسال درجتك ✅</p>
     <button class="btn wa" id="wa">ابعت نتيجتك على واتساب</button>
     <button class="btn gold" id="again">المحاولة الثانية</button>
     <p class="note" id="left"></p>
@@ -138,6 +145,11 @@ function render(){
 }
 $("nx").onclick=function(){if(idx<Q.length-1){idx++;render()}else finish()};
 
+function send(f,attempt){
+  [].forEach.call($("fam").children,function(x){x.disabled=true});
+  try{fetch(SHEET,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({name:name+" ("+f+")",score:score,total:Q.length,attempt:attempt,family:f})})}catch(e){}
+  $("fam").classList.add("hide");$("pick").classList.add("hide");$("sent").classList.remove("hide");
+}
 function finish(){
   score=0;Q.forEach(function(q,i){if(ans[i]===q[3])score++});
   var attempt=used+1,pct=Math.round(score/Q.length*100);
@@ -149,7 +161,8 @@ function finish(){
   $("again").classList.toggle("hide",rest<=0);
   $("left").textContent=rest>0?"باقي لك محاولة واحدة.":"انتهت محاولاتك.";
   show("end");
-  try{fetch(SHEET,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({name:name,score:score,total:Q.length,attempt:attempt})})}catch(e){}
+  $("fam").classList.remove("hide");$("pick").classList.remove("hide");$("sent").classList.add("hide");
+  [].forEach.call($("fam").children,function(b){b.disabled=false;b.onclick=function(){send(b.getAttribute("data-f"),attempt)}});
   $("wa").onclick=function(){
     var t="مسابقة صموئيل الأول (ص٣ و٤)\nالاسم: "+name+"\nالدرجة: "+score+" من "+Q.length+"\nالمحاولة: "+attempt;
     window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(t),"_blank");
