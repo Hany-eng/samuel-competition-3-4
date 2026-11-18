@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مسابقة صموئيل الأول – الإصحاح ٣ و٤</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14213d;--navy2:#22335c;--gold:#d4a62a;--gold-soft:#f6ecc9;--bg:#eef1f7;--card:#fff;--ink:#1b2438;--mute:#667089;--line:#d9deea}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1424;--card:#18213a;--ink:#eef1f8;--mute:#a3acc4;--line:#2b3656;--gold-soft:#2a2b3d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,Arial,sans-serif;min-height:100vh}
+header{background:linear-gradient(160deg,var(--navy),var(--navy2));color:#fff;text-align:center;padding:28px 16px 56px;border-bottom:4px solid var(--gold)}
+header h1{margin:0 0 6px;font-size:26px;font-weight:800}
+header p{margin:0;color:#dfe5f5;font-size:15px}
+main{max-width:620px;margin:-36px auto 32px;padding:0 14px}
+.card{background:var(--card);border-radius:18px;padding:22px;box-shadow:0 8px 28px rgba(20,33,61,.14);border:1px solid var(--line)}
+.hide{display:none}
+label{display:block;font-weight:700;margin-bottom:8px}
+input[type=text]{width:100%;padding:14px;font:inherit;border:2px solid var(--line);border-radius:12px;background:transparent;color:inherit}
+input[type=text]:focus{outline:none;border-color:var(--gold)}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px;font-weight:700;font-size:17px;width:100%}
+.btn{background:var(--navy);color:#fff;margin-top:14px}
+.btn:hover{background:var(--navy2)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.gold{background:var(--gold);color:#241a00}
+.btn.wa{background:#1f9d55;color:#fff}
+.note{color:var(--mute);font-size:14px;margin:10px 0 0}
+.err{color:#c0392b;font-weight:700;margin:10px 0 0}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:14px;margin-bottom:14px}
+.chap{display:inline-block;background:var(--gold-soft);color:#7a5a00;border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700}
+@media (prefers-color-scheme:dark){.chap{color:var(--gold)}}
+.q{font-size:20px;font-weight:700;line-height:1.7;margin:12px 0 16px}
+.opt{display:block;text-align:right;background:transparent;color:inherit;border:2px solid var(--line);margin-bottom:10px;font-weight:500;font-size:17px;line-height:1.6}
+.opt:hover{border-color:var(--gold)}
+.opt.sel{border-color:var(--navy);background:var(--navy);color:#fff}
+.score{text-align:center}
+.ring{width:150px;height:150px;border-radius:50%;margin:6px auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column;background:conic-gradient(var(--gold) calc(var(--p)*1%),var(--line) 0);position:relative}
+.ring:before{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--card)}
+.ring b,.ring span{position:relative}
+.ring b{font-size:38px;color:var(--navy)}
+@media (prefers-color-scheme:dark){.ring b{color:var(--gold)}}
+.ring span{color:var(--mute);font-size:14px}
+.msg{font-size:19px;font-weight:700;margin:4px 0 14px}
+footer{max-width:620px;margin:0 auto 36px;padding:0 14px;text-align:center}
+footer h3{margin:0 0 10px;font-size:16px;color:var(--mute);font-weight:700}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nums div{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:14px;padding:14px 8px;color:var(--ink)}
+.nums b{font-size:15px}
+</style>
+</head>
+<body>
+<header>
+  <h1>مسابقة سفر صموئيل الأول</h1>
+  <p>الإصحاح الثالث والرابع</p>
+</header>
+<main>
+  <section id="start" class="card">
+    <label for="nm">اكتب اسمك الثلاثي</label>
+    <input id="nm" type="text" autocomplete="name" placeholder="مثال: مينا جرجس سمير">
+    <p class="note">١٢ سؤال، ولكل طالب محاولتان فقط. تظهر لك الدرجة في الآخر.</p>
+    <p id="e1" class="err hide"></p>
+    <button class="btn" id="go">ابدأ المسابقة</button>
+  </section>
+
+  <section id="quiz" class="card hide">
+    <div class="bar"><i id="pb"></i></div>
+    <div class="meta"><span id="cnt"></span><span id="who"></span></div>
+    <span class="chap" id="chap"></span>
+    <div class="q" id="qt"></div>
+    <div id="opts"></div>
+    <button class="btn" id="nx" disabled>التالي</button>
+  </section>
+
+  <section id="end" class="card score hide">
+    <div class="ring" id="ring"><b id="sc"></b><span id="of"></span></div>
+    <div class="msg" id="ms"></div>
+    <button class="btn wa" id="wa">ابعت نتيجتك على واتساب</button>
+    <button class="btn gold" id="again">المحاولة الثانية</button>
+    <p class="note" id="left"></p>
+  </section>
+</main>
+
+<footer>
+  <h3>مسابقة مقدمة من</h3>
+  <div class="nums">
+    <div><b>أسرة لباس الصليب</b></div>
+    <div><b>أسرة شهيدات</b></div>
+  </div>
+</footer>
+
+<script>
+var SHEET="https://script.google.com/macros/s/AKfycbzcE-GE9KU-JbK_j08YoTeIWjozDz8PnYDaE0YMNfb-aTx8S2QErZC8jKgOgPMiVwgQpw/exec";
+var WA="201211970083", MAX=2, KEY="samuel34:";
+var Q=[
+["الإصحاح ٣","من هو الكاهن الذي كان صموئيل يخدم أمامه في شيلوه؟",["ألقانة","عالي","فينحاس","صادوق"],1],
+["الإصحاح ٣","كانت كلمة الرب في تلك الأيام «عزيزة». ما معنى «عزيزة» هنا؟",["غالية الثمن","قوية","نادرة وقليلة","مكروهة"],2],
+["الإصحاح ٣","كم مرة ظن صموئيل أن عالي هو الذي يناديه؟",["مرة واحدة","مرتين","ثلاث مرات","أربع مرات"],2],
+["الإصحاح ٣","ماذا نصح عالي صموئيل أن يقول إذا ناداه الرب مرة أخرى؟",["هأنذا يا أبي","تكلم يا رب لأن عبدك سامع","أرسلني أنا","اغفر لي يا رب"],1],
+["الإصحاح ٣","بماذا أخبر الرب صموئيل في الرؤيا؟",["أن الله سيقضي على بيت عالي","أن الفلسطينيين سيهجمون على شيلوه","أن صموئيل سيصير ملكًا","أن التابوت سيُفقد"],0],
+["الإصحاح ٣","ماذا قال عالي بعد أن عرف كل ما أخبره به الرب؟",["هو الرب، ما يحسن في عينيه يفعل","اكتم هذا الأمر ولا تخبر أحدًا","اخرج من بيتي","سأقتل ابنَيّ بيدي"],0],
+["الإصحاح ٤","مع من دارت الحرب عند أبنيزر وأفيق؟",["الفلسطينيين","الأراميين","المؤابيين","العمونيين"],0],
+["الإصحاح ٤","كم رجلًا قُتل من إسرائيل في المعركة الأولى تقريبًا؟",["ألف","أربعة آلاف","ثلاثون ألفًا","مائة ألف"],1],
+["الإصحاح ٤","ماذا فعل شيوخ إسرائيل بعد الهزيمة الأولى؟",["صاموا ثلاثة أيام","أرسلوا إلى مصر يطلبون عونًا","أحضروا تابوت عهد الرب من شيلوه","اختاروا ملكًا"],2],
+["الإصحاح ٤","ما اسما ابنَي عالي اللذين جاءا مع التابوت؟",["يوئيل وأبيا","حفني وفينحاس","أبيناداب وناداب","ألقانة وصموئيل"],1],
+["الإصحاح ٤","كيف مات عالي عندما سمع بأخذ التابوت؟",["قُتل في الحرب","سقط عن كرسيه إلى الوراء فانكسرت رقبته","مات في نومه","أسره الفلسطينيون"],1],
+["الإصحاح ٤","سمّت زوجة فينحاس ابنها «إيخابود». ما معنى الاسم؟",["الله معنا","زال المجد من إسرائيل","الرب يرى","سمع الله"],1]
+];
+var $=function(i){return document.getElementById(i)};
+var name="",idx=0,ans=[],score=0,used=0;
+
+function norm(s){return s.trim().replace(/\s+/g," ").toLowerCase()}
+function getUsed(n){try{return parseInt(localStorage.getItem(KEY+norm(n)))||0}catch(e){return 0}}
+function setUsed(n,v){try{localStorage.setItem(KEY+norm(n),String(v))}catch(e){}}
+function show(id){["start","quiz","end"].forEach(function(s){$(s).classList.toggle("hide",s!==id)})}
+
+$("go").onclick=function(){
+  var n=$("nm").value.trim();
+  if(n.split(/\s+/).length<2){$("e1").textContent="اكتب اسمك الأول والثاني على الأقل.";$("e1").classList.remove("hide");return}
+  if(getUsed(n)>=MAX){$("e1").textContent="استخدمت محاولتيك بالفعل.";$("e1").classList.remove("hide");return}
+  name=n;used=getUsed(n);begin();
+};
+function begin(){idx=0;ans=[];score=0;setUsed(name,used+1);$("who").textContent=name;show("quiz");render()}
+function render(){
+  var q=Q[idx];
+  $("cnt").textContent="سؤال "+(idx+1)+" من "+Q.length;
+  $("pb").style.width=(idx/Q.length*100)+"%";
+  $("chap").textContent=q[0];$("qt").textContent=q[1];
+  $("opts").innerHTML="";$("nx").disabled=true;
+  $("nx").textContent=idx===Q.length-1?"إنهاء":"التالي";
+  q[2].forEach(function(t,i){
+    var b=document.createElement("button");b.className="opt";b.textContent=t;
+    b.onclick=function(){ans[idx]=i;[].forEach.call($("opts").children,function(c){c.classList.remove("sel")});b.classList.add("sel");$("nx").disabled=false};
+    $("opts").appendChild(b);
+  });
+}
+$("nx").onclick=function(){if(idx<Q.length-1){idx++;render()}else finish()};
+
+function finish(){
+  score=0;Q.forEach(function(q,i){if(ans[i]===q[3])score++});
+  var attempt=used+1,pct=Math.round(score/Q.length*100);
+  $("pb").style.width="100%";
+  $("sc").textContent=score;$("of").textContent="من "+Q.length;
+  $("ring").style.setProperty("--p",pct);
+  $("ms").textContent=pct>=90?"ممتاز! بارك الرب تعبك 🌟":pct>=70?"جيد جدًا، كمّل!":pct>=50?"جيد، حاول تراجع الإصحاحين":"راجع الإصحاحين وحاول تاني";
+  var rest=MAX-attempt;
+  $("again").classList.toggle("hide",rest<=0);
+  $("left").textContent=rest>0?"باقي لك محاولة واحدة.":"انتهت محاولاتك.";
+  show("end");
+  try{fetch(SHEET,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({name:name,score:score,total:Q.length,attempt:attempt})})}catch(e){}
+  $("wa").onclick=function(){
+    var t="مسابقة صموئيل الأول (ص٣ و٤)\nالاسم: "+name+"\nالدرجة: "+score+" من "+Q.length+"\nالمحاولة: "+attempt;
+    window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(t),"_blank");
+  };
+  $("again").onclick=function(){used=attempt;begin()};
+}
+</script>
+</body>
+</html>
