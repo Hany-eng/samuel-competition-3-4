@@ -82,7 +82,7 @@ footer h3{margin:0 0 10px;font-size:16px;color:var(--mute);font-weight:700}
     <div class="ring" id="ring"><b id="sc"></b><span id="of"></span></div>
     <div class="msg" id="ms"></div>
     <p class="note" id="pick">اضغط على أسرتك لإرسال درجتك</p>
-    <div class="fam" id="fam"><button data-f="أسرة لباس الصليب">أسرة لباس الصليب</button><button data-f="أسرة شهيدات">أسرة شهيدات</button></div>
+    <div class="fam" id="fam"><button data-f="أسرة لباس الصليب">أسرة لباس الصليب</button><button data-f="أسرة قديسات">أسرة قديسات</button></div>
     <p class="ok hide" id="sent">تم إرسال درجتك ✅</p>
     <button class="btn wa" id="wa">ابعت نتيجتك على واتساب</button>
     <button class="btn gold" id="again">المحاولة الثانية</button>
@@ -156,7 +156,7 @@ function finish(){
   $("pb").style.width="100%";
   $("sc").textContent=score;$("of").textContent="من "+Q.length;
   $("ring").style.setProperty("--p",pct);
-  $("ms").textContent=pct>=90?"ممتاز! بارك الرب تعبك 🌟":pct>=70?"جيد جدًا، كمّل!":pct>=50?"جيد، حاول تراجع الإصحاحين":"راجع الإصحاحين وحاول تاني";
+  $("ms").textContent=pct>=90?"ممتاز! ربنا يبارك تعبك 🌟":pct>=70?"جيد جدًا، كمّل!":pct>=50?"جيد، حاول تراجع الإصحاحين":"راجع الإصحاحين وحاول تاني";
   var rest=MAX-attempt;
   $("again").classList.toggle("hide",rest<=0);
   $("left").textContent=rest>0?"باقي لك محاولة واحدة.":"انتهت محاولاتك.";
